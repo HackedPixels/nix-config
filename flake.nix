@@ -5,10 +5,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.url = "github:nix-community/home-manager";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, determinate }:
+  outputs = inputs@{ self, home-manager, nix-darwin, nixpkgs, determinate }:
   let
     configuration = { pkgs, ... }: {
       # List packages installed in system profile. To search by name, run:
@@ -22,6 +23,10 @@
 
       # Enable alternative shell support in nix-darwin.
       # programs.fish.enable = true;
+      programs.zsh = {
+        enable = true;
+        enableSyntaxHighlighting = true;
+      };
 
       # Set Git commit hash for darwin-version.
       system.configurationRevision = self.rev or self.dirtyRev or null;
@@ -32,6 +37,12 @@
 
       # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";
+
+      users.users.jan = {
+        name = "jan";
+        home = "/Users/jan";
+      };
+
     };
   in
   {
@@ -43,6 +54,16 @@
         inputs.determinate.darwinModules.default
         {
             determinateNix.enable = true;
+        }
+        home-manager.darwinModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = { inherit inputs; };
+          home-manager.users.jan = { pkgs, ... }: {
+            home.stateVersion = "26.05";
+            programs.bat.enable = true;
+          };
         }
       ];
     };
