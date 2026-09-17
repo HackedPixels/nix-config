@@ -11,6 +11,8 @@
 
   outputs = inputs@{ self, home-manager, nix-darwin, nixpkgs, determinate }:
   let
+    mkDarwinSystem = { system, username }:
+    let
     configuration = { pkgs, ... }: {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
@@ -35,19 +37,14 @@
       system.stateVersion = 6;
 
       # The platform the configuration will be used on.
-      nixpkgs.hostPlatform = "aarch64-darwin";
+      nixpkgs.hostPlatform = system;
 
-      users.users.jan = {
-        name = "jan";
-        home = "/Users/jan";
+      users.users.${username} = {
+        name = username;
+        home = "/Users/${username}";
       };
-
     };
-  in
-  {
-    # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#Jans-MacBook-Pro
-    darwinConfigurations."Jans-MacBook-Pro" = nix-darwin.lib.darwinSystem {
+    in nix-darwin.lib.darwinSystem {
       modules = [
         configuration
         inputs.determinate.darwinModules.default
@@ -122,6 +119,14 @@
 
         }
       ];
+    };
+  in
+  {
+    darwinConfigurations = {
+      "SDGDEU-YFD7130T" = mkDarwinSystem {
+        system = "aarch64-darwin";
+        username = "jan";
+      };
     };
   };
 }
