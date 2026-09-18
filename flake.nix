@@ -56,7 +56,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.jan = { pkgs, ... }: {
+          home-manager.users.${username}= { pkgs, ... }: {
             home.stateVersion = "26.05";
             programs.bat.enable = true;
 
@@ -84,6 +84,20 @@
 "zsh-users/zsh-autosuggestions"
                 ];
               };
+            };
+
+            programs.tmux = {
+              enable = true;
+              baseIndex = 1;
+              clock24 = true;
+              keyMode = "vi";
+              prefix = "C-a";
+            };
+
+            programs.direnv = {
+              enable = true;
+              enableZshIntegration = true;
+              nix-direnv.enable = true;
             };
 
             programs.starship = {
@@ -124,6 +138,10 @@
   {
     darwinConfigurations = {
       "SDGDEU-YFD7130T" = mkDarwinSystem {
+        system = "aarch64-darwin";
+        username = "jan";
+      };
+      "Jans-MacBook-Pro" = mkDarwinSystem {
         system = "aarch64-darwin";
         username = "jan";
       };
