@@ -2,6 +2,7 @@
   description = "Example nix-darwin system flake";
 
   inputs = {
+    catppuccin.url = "github:catppuccin/nix";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
@@ -9,7 +10,7 @@
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
   };
 
-  outputs = inputs@{ self, home-manager, nix-darwin, nixpkgs, determinate }:
+  outputs = inputs@{ self, home-manager, nix-darwin, nixpkgs, determinate, catppuccin }:
   let
     mkDarwinSystem = { system, username }:
     let
@@ -57,6 +58,10 @@
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = { inherit inputs; };
           home-manager.users.${username}= { pkgs, ... }: {
+            imports = [
+              catppuccin.homeModules.catppuccin
+            ];
+
             home.stateVersion = "26.05";
             programs.bat.enable = true;
 
@@ -92,12 +97,42 @@
               clock24 = true;
               keyMode = "vi";
               prefix = "C-a";
+              plugins = with pkgs.tmuxPlugins; [
+                cpu
+                tilish
+              ];
+              extraConfig = ''
+              set -g @tilish-default 'main-vertical'
+              '';
+            };
+
+            programs.btop.enable = true;
+
+            catppuccin.enable = true;
+            catppuccin.tmux = {
+              enable = true;
+              extraConfig = ''
+                set -g status-right-length 100
+                set -g status-left-length 100
+                set -g status-left ""
+                set -g status-right "#{E:@catppuccin_status_application}"
+                set -agF status-right "#{E:@catppuccin_status_cpu}"
+                set -agF status-right "#{E:@catppuccin_status_ram}"
+                set -ag status-right "#{E:@catppuccin_status_session}"
+                set -ag status-right "#{E:@catppuccin_status_uptime}"
+                set -agF status-right "#{E:@catppuccin_status_battery}"
+              '';
             };
 
             programs.direnv = {
               enable = true;
               enableZshIntegration = true;
               nix-direnv.enable = true;
+            };
+
+            programs.eza = {
+              enable = true;
+              enableZshIntegration = true;
             };
 
             programs.starship = {
@@ -127,10 +162,8 @@
                   checker = { enabled = true },
                 })
               '';
-
             };
           };
-
         }
       ];
     };
