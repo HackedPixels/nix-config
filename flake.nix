@@ -60,6 +60,8 @@
           home-manager.users.${username}= { pkgs, ... }: {
             imports = [
               catppuccin.homeModules.catppuccin
+              ./modules/editor.nix
+              ./modules/shell.nix
             ];
 
             home.stateVersion = "26.05";
@@ -73,23 +75,6 @@
               gcc
               nodejs_22
             ];
-
-            programs.zsh = {
-              enable = true;
-              antidote = {
-                enable = true;
-                plugins = [
-"getantidote/use-omz"
-"ohmyzsh/ohmyzsh path:lib"
-"ohmyzsh/ohmyzsh path:plugins/colored-man-pages"
-"ohmyzsh/ohmyzsh path:plugins/magic-enter"
-
-"jeffreytse/zsh-vi-mode"
-"zdharma-continuum/fast-syntax-highlighting kind:defer"
-"zsh-users/zsh-autosuggestions"
-                ];
-              };
-            };
 
             programs.tmux = {
               enable = true;
@@ -139,29 +124,6 @@
               enable = true;
               enableZshIntegration = true;
               presets = [];
-            };
-
-            programs.neovim = {
-              enable = true;
-              defaultEditor = true;
-              viAlias = true;
-              vimAlias = true;
-
-              plugins = with pkgs.vimPlugins; [
-                lazy-nvim
-                LazyVim
-              ];
-
-              initLua = ''
-                require("lazy").setup({
-                  spec = {
-                    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-                  },
-                  defaults = { lazy = false },
-                  install = { colorscheme = { "tokyonight", "habamax" } },
-                  checker = { enabled = true },
-                })
-              '';
             };
           };
         }
