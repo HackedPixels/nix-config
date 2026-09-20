@@ -7,6 +7,7 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
   };
 
@@ -57,78 +58,25 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.${username}= { pkgs, ... }: {
-            imports = [
-              catppuccin.homeModules.catppuccin
-              ./modules/editor.nix
-              ./modules/shell.nix
-            ];
-
-            home.stateVersion = "26.05";
-            programs.bat.enable = true;
-
-            home.packages = with pkgs; [
-              ripgrep
-              fd
-              lazygit
-              unzip
-              gcc
-              nodejs_22
-            ];
-
-            programs.tmux = {
-              enable = true;
-              baseIndex = 1;
-              clock24 = true;
-              keyMode = "vi";
-              prefix = "C-a";
-              plugins = with pkgs.tmuxPlugins; [
-                cpu
-                tilish
-              ];
-              extraConfig = ''
-              set -g @tilish-default 'main-vertical'
-              '';
-            };
-
-            programs.btop.enable = true;
-
-            catppuccin.enable = true;
-            catppuccin.tmux = {
-              enable = true;
-              extraConfig = ''
-                set -g status-right-length 100
-                set -g status-left-length 100
-                set -g status-left ""
-                set -g status-right "#{E:@catppuccin_status_application}"
-                set -agF status-right "#{E:@catppuccin_status_cpu}"
-                set -agF status-right "#{E:@catppuccin_status_ram}"
-                set -ag status-right "#{E:@catppuccin_status_session}"
-                set -ag status-right "#{E:@catppuccin_status_uptime}"
-                set -agF status-right "#{E:@catppuccin_status_battery}"
-              '';
-            };
-
-            programs.direnv = {
-              enable = true;
-              enableZshIntegration = true;
-              nix-direnv.enable = true;
-            };
-
-            programs.eza = {
-              enable = true;
-              enableZshIntegration = true;
-            };
-
-            programs.starship = {
-              enable = true;
-              enableZshIntegration = true;
-              presets = [];
-            };
-          };
+          home-manager.users.${username} = import ./modules/home.nix;
         }
       ];
     };
+
+    # Standalone home-manager for a non-NixOS Linux host that already has nix installed.
+    mkLinuxSystem = { system, username }:
+      home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.${system};
+        extraSpecialArgs = { inherit inputs; };
+        modules = [
+          ./modules/home.nix
+          {
+            home.username = username;
+            home.homeDirectory = "/home/${username}";
+            targets.genericLinux.enable = true;
+          }
+        ];
+      };
   in
   {
     darwinConfigurations = {
@@ -138,6 +86,13 @@
       };
       "Jans-MacBook-Pro" = mkDarwinSystem {
         system = "aarch64-darwin";
+        username = "jan";
+      };
+    };
+
+    homeConfigurations = {
+      "jankoeppen@SDGDEU-G60216JQ" = mkLinuxSystem {
+        system = "x86_64-linux";
         username = "jan";
       };
     };
