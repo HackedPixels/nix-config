@@ -9,9 +9,10 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
+#    pi.url = "github:lukasl-dev/pi.nix";
   };
 
-  outputs = inputs@{ self, home-manager, nix-darwin, nixpkgs, determinate, catppuccin }:
+  outputs = inputs@{ self, home-manager, nix-darwin, nixpkgs, determinate, catppuccin, ...}:
   let
     mkDarwinSystem = { system, username }:
     let
@@ -19,7 +20,9 @@
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
       environment.systemPackages =
-        [ pkgs.vim
+        [
+          pkgs.vim
+          pkgs.lmstudio
         ];
 
       fonts.packages = [
@@ -43,7 +46,10 @@
       system.stateVersion = 6;
 
       # The platform the configuration will be used on.
-      nixpkgs.hostPlatform = system;
+      nixpkgs = {
+        hostPlatform = system;
+        config.allowUnfree = true;
+      };
 
       users.users.${username} = {
         name = username;

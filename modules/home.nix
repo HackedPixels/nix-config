@@ -1,5 +1,6 @@
 { pkgs, inputs, ... }: {
   imports = [
+    inputs.pi.homeModules.default
     inputs.catppuccin.homeModules.catppuccin
     ./editor.nix
     ./shell.nix
@@ -15,6 +16,7 @@
     unzip
     gcc
     nodejs_22
+    crush
   ];
 
   programs.tmux = {
@@ -111,4 +113,8 @@ set -g window-status-current-style "bg=#{@thm_peach},fg=#{@thm_bg},bold"
     enableZshIntegration = true;
     presets = [];
   };
+
+   programs.pi.coding-agent = {
+    enable = false;
+   };
 }
