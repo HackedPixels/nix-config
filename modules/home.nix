@@ -17,6 +17,8 @@
     nodejs_22
   ];
 
+  programs.claude-code.enable = true;
+
   programs.tmux = {
     enable = true;
     baseIndex = 1;

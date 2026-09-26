@@ -73,6 +73,9 @@
         pkgs = nixpkgs.legacyPackages.${system};
         extraSpecialArgs = { inherit inputs; };
         modules = [
+          {
+            nixpkgs.config.allowUnfree = true;
+          }
           ./modules/home.nix
           {
             home.username = username;
@@ -96,6 +99,12 @@
 
     homeConfigurations = {
       "jankoeppen@SDGDEU-G60216JQ" = mkLinuxSystem {
+        system = "x86_64-linux";
+        username = "jan";
+      };
+    };
+    homeConfigurations = {
+      "jan@cairo" = mkLinuxSystem {
         system = "x86_64-linux";
         username = "jan";
       };
