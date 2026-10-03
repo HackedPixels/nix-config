@@ -40,6 +40,14 @@
         enable = true;
       };
 
+      programs.mas = {
+        enable = true;
+        packages = {
+          "1Password for Safari" = 1569813296;
+          "Telegram" = 747648890;
+        };
+      };
+
       # Set Git commit hash for darwin-version.
       system.configurationRevision = self.rev or self.dirtyRev or null;
 
