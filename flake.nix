@@ -20,6 +20,7 @@
       # $ nix-env -qaP | grep wget
       environment.systemPackages =
         [ pkgs.vim
+        #  pkgs.alcove # dont include since it cant be licensed when installed via nix
         ];
 
       fonts.packages = [
@@ -28,6 +29,10 @@
       
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
+
+      system.primaryUser = username;
+      system.defaults.dock.autohide = true;
+      system.defaults.dock.largesize = 64;
 
       # Enable alternative shell support in nix-darwin.
       # programs.fish.enable = true;
@@ -52,6 +57,9 @@
     };
     in nix-darwin.lib.darwinSystem {
       modules = [
+        {
+          nixpkgs.config.allowUnfree = true;
+        }
         configuration
         inputs.determinate.darwinModules.default
         {
