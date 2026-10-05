@@ -1,4 +1,6 @@
 { pkgs, ... }: {
+  programs.obsidian.enable = true;
+
   programs.neovim = {
     enable = true;
     defaultEditor = true;

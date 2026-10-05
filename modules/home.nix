@@ -115,6 +115,6 @@ set -g window-status-current-style "bg=#{@thm_peach},fg=#{@thm_bg},bold"
   };
 
    programs.pi.coding-agent = {
-    enable = false;
+    enable = true;
    };
 }
