@@ -11,12 +11,14 @@
   home.packages = with pkgs; [
     ripgrep
     fd
+    git
     lazygit
     unzip
     gcc
     nodejs_22
   ];
 
+  programs.zed-editor.enable = true;
   programs.claude-code.enable = true;
 
   programs.tmux = {

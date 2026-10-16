@@ -20,6 +20,7 @@
       # $ nix-env -qaP | grep wget
       environment.systemPackages =
         [ pkgs.vim
+        pkgs.orbstack
         #  pkgs.alcove # dont include since it cant be licensed when installed via nix
         ];
 
@@ -51,6 +52,8 @@
       # Set Git commit hash for darwin-version.
       system.configurationRevision = self.rev or self.dirtyRev or null;
 
+      #services.tailscale.enable = true;
+
       # Used for backwards compatibility, please read the changelog before changing.
       # $ darwin-rebuild changelog
       system.stateVersion = 6;
@@ -71,7 +74,14 @@
         configuration
         inputs.determinate.darwinModules.default
         {
-            determinateNix.enable = true;
+          determinateNix.enable = true;
+          determinateNix.determinateNixd = {
+            builder = {
+              state = "enabled";
+              cpuCount = 6;
+              memoryBytes = 17179869184; # 16 GiB
+            };
+          };
         }
         home-manager.darwinModules.home-manager
         {
