@@ -26,7 +26,7 @@
           pkgs.lmstudio
           pkgs.git
 
-          pkgs.alcove
+          #pkgs.alcove # dont include since it cant be licensed when installed via nix
           pkgs.fzf
 
           pkgs.serie
