@@ -30,6 +30,8 @@
           pkgs.fzf
 
           pkgs.serie
+
+          pkgs.orbstack
         ];
       environment.variables = {
           PATH = "$PATH:$HOME/.docker/bin";
@@ -42,14 +44,28 @@
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
 
+      system.primaryUser = username;
+      system.defaults.dock.autohide = true;
+      system.defaults.dock.largesize = 64;
+
       # Enable alternative shell support in nix-darwin.
       # programs.fish.enable = true;
       programs.zsh = {
         enable = true;
       };
 
+      programs.mas = {
+        enable = true;
+        packages = {
+          "1Password for Safari" = 1569813296;
+          "Telegram" = 747648890;
+        };
+      };
+
       # Set Git commit hash for darwin-version.
       system.configurationRevision = self.rev or self.dirtyRev or null;
+
+      #services.tailscale.enable = true;
 
       # Used for backwards compatibility, please read the changelog before changing.
       # $ darwin-rebuild changelog
@@ -72,6 +88,13 @@
         inputs.determinate.darwinModules.default
         {
             determinateNix.enable = true;
+            determinateNix.determinateNixd = {
+              builder = {
+                state = "enabled";
+                cpuCount = 6;
+                memoryBytes = 17179869184; # 16 GiB
+              };
+            };
         }
         nixvim.nixDarwinModules.nixvim
         home-manager.darwinModules.home-manager
@@ -90,6 +113,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
         extraSpecialArgs = { inherit inputs; };
         modules = [
+          { nixpkgs.config.allowUnfree = true; }
           ./modules/home.nix
           {
             home.username = username;
@@ -113,6 +137,10 @@
 
     homeConfigurations = {
       "jankoeppen@SDGDEU-G60216JQ" = mkLinuxSystem {
+        system = "x86_64-linux";
+        username = "jan";
+      };
+      "jan@cairo" = mkLinuxSystem {
         system = "x86_64-linux";
         username = "jan";
       };

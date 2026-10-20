@@ -13,12 +13,16 @@
   home.packages = with pkgs; [
     ripgrep
     fd
+    git
     lazygit
     unzip
     gcc
     nodejs_22
     crush
   ];
+
+  programs.zed-editor.enable = true;
+  programs.claude-code.enable = true;
 
   programs.tmux = {
     enable = true;
@@ -41,8 +45,9 @@
 
   programs.wezterm = {
     enable = true;
+    enableZshIntegration = true;
     extraConfig = ''
-      -- custom options go here
+      config.font = wezterm.font 'JetBrainsMono NF'
       config.font_size = 14.0
 
       return config

@@ -7,6 +7,7 @@
     enable = true;
     autoEnable = false;
     flavor = "mocha";
+    accent = "peach";
   };
   catppuccin.wezterm = {
     enable = true;
