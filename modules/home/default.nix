@@ -1,7 +1,7 @@
 { pkgs, inputs, profile, ... }: {
   imports = [
     ./${profile}.nix
-    inputs.pi.homeModules.default
+#    inputs.pi.homeModules.default
     inputs.nixvim.homeModules.nixvim
     ./editor.nix
     ./shell.nix
@@ -33,13 +33,13 @@
     prefix = "C-a";
     plugins = with pkgs.tmuxPlugins; [
       cpu
-      tilish
+      {
+      	plugin = tilish;
+	extraConfig = "set -g @tilish-default 'main-vertical'";
+      }
       online-status
       battery
     ];
-    extraConfig = ''
-    set -g @tilish-default 'main-vertical'
-    '';
   };
 
   programs.btop.enable = true;
@@ -72,7 +72,7 @@
     presets = [];
   };
 
-   programs.pi.coding-agent = {
-    enable = true;
-   };
+#   programs.pi.coding-agent = {
+#    enable = true;
+#   };
 }
