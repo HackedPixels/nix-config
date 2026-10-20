@@ -15,106 +15,20 @@
 
   outputs = inputs@{ self, home-manager, nix-darwin, nixpkgs, determinate, catppuccin, nixvim, ...}:
   let
-    mkDarwinSystem = { system, username }:
-    let
-    configuration = { pkgs, ... }: {
-      # List packages installed in system profile. To search by name, run:
-      # $ nix-env -qaP | grep wget
-      environment.systemPackages =
-        [
-          pkgs.vim
-          pkgs.lmstudio
-          pkgs.git
-
-          #pkgs.alcove # dont include since it cant be licensed when installed via nix
-          pkgs.fzf
-
-          pkgs.serie
-
-          pkgs.orbstack
-        ];
-      environment.variables = {
-          PATH = "$PATH:$HOME/.docker/bin";
+    mkDarwinSystem = { system, username, profile }:
+      nix-darwin.lib.darwinSystem {
+        specialArgs = { inherit inputs system username profile; };
+        modules = [ ./modules/darwin ];
       };
-
-      fonts.packages = [
-        pkgs.nerd-fonts.jetbrains-mono
-      ];
-      
-      # Necessary for using flakes on this system.
-      nix.settings.experimental-features = "nix-command flakes";
-
-      system.primaryUser = username;
-      system.defaults.dock.autohide = true;
-      system.defaults.dock.largesize = 64;
-
-      # Enable alternative shell support in nix-darwin.
-      # programs.fish.enable = true;
-      programs.zsh = {
-        enable = true;
-      };
-
-      programs.mas = {
-        enable = true;
-        packages = {
-          "1Password for Safari" = 1569813296;
-          "Telegram" = 747648890;
-        };
-      };
-
-      # Set Git commit hash for darwin-version.
-      system.configurationRevision = self.rev or self.dirtyRev or null;
-
-      #services.tailscale.enable = true;
-
-      # Used for backwards compatibility, please read the changelog before changing.
-      # $ darwin-rebuild changelog
-      system.stateVersion = 6;
-
-      # The platform the configuration will be used on.
-      nixpkgs = {
-        hostPlatform = system;
-        config.allowUnfree = true;
-      };
-
-      users.users.${username} = {
-        name = username;
-        home = "/Users/${username}";
-      };
-    };
-    in nix-darwin.lib.darwinSystem {
-      modules = [
-        configuration
-        inputs.determinate.darwinModules.default
-        {
-            determinateNix.enable = true;
-            determinateNix.determinateNixd = {
-              builder = {
-                state = "enabled";
-                cpuCount = 6;
-                memoryBytes = 17179869184; # 16 GiB
-              };
-            };
-        }
-        nixvim.nixDarwinModules.nixvim
-        home-manager.darwinModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.${username} = import ./modules/home.nix;
-        }
-      ];
-    };
 
     # Standalone home-manager for a non-NixOS Linux host that already has nix installed.
-    mkLinuxSystem = { system, username }:
+    mkLinuxSystem = { system, username, profile }:
       home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};
-        extraSpecialArgs = { inherit inputs; };
+        extraSpecialArgs = { inherit inputs profile; };
         modules = [
           { nixpkgs.config.allowUnfree = true; }
-          ./modules/home.nix
+          ./modules/home
           {
             home.username = username;
             home.homeDirectory = "/home/${username}";
@@ -128,10 +42,12 @@
       "SDGDEU-YFD7130T" = mkDarwinSystem {
         system = "aarch64-darwin";
         username = "jan";
+        profile = "work";
       };
       "Jans-MacBook-Pro" = mkDarwinSystem {
         system = "aarch64-darwin";
         username = "jan";
+        profile = "private";
       };
     };
 
@@ -139,10 +55,12 @@
       "jankoeppen@SDGDEU-G60216JQ" = mkLinuxSystem {
         system = "x86_64-linux";
         username = "jan";
+        profile = "work";
       };
       "jan@cairo" = mkLinuxSystem {
         system = "x86_64-linux";
         username = "jan";
+        profile = "private";
       };
     };
   };

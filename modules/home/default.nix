@@ -1,5 +1,6 @@
-{ pkgs, inputs, ... }: {
+{ pkgs, inputs, profile, ... }: {
   imports = [
+    ./${profile}.nix
     inputs.pi.homeModules.default
     inputs.nixvim.homeModules.nixvim
     ./editor.nix
