@@ -1,4 +1,8 @@
 { pkgs, ...}: {
+  programs.htop = {
+    enable = true;
+  };
+
   programs.zsh = {
     enable = true;
 

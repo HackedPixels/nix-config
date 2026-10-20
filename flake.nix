@@ -4,6 +4,7 @@
   inputs = {
     catppuccin.url = "github:catppuccin/nix";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixvim.url = "github:nix-community/nixvim";
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
@@ -12,7 +13,7 @@
     pi.url = "github:lukasl-dev/pi.nix";
   };
 
-  outputs = inputs@{ self, home-manager, nix-darwin, nixpkgs, determinate, catppuccin, ...}:
+  outputs = inputs@{ self, home-manager, nix-darwin, nixpkgs, determinate, catppuccin, nixvim, ...}:
   let
     mkDarwinSystem = { system, username }:
     let
@@ -28,7 +29,7 @@
           pkgs.alcove
           pkgs.fzf
 
-          pkgs.wezterm
+          pkgs.serie
         ];
       environment.variables = {
           PATH = "$PATH:$HOME/.docker/bin";
@@ -72,6 +73,7 @@
         {
             determinateNix.enable = true;
         }
+        nixvim.nixDarwinModules.nixvim
         home-manager.darwinModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
