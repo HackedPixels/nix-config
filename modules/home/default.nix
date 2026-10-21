@@ -6,6 +6,7 @@
     ./editor.nix
     ./shell.nix
     ./theme.nix
+    ./git.nix
   ];
 
   home.stateVersion = "26.05";

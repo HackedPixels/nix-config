@@ -1,5 +1,5 @@
 # Shared darwin config. Profile specific parts live in ./<profile>.nix.
-{ pkgs, inputs, system, username, profile, ... }: {
+{ pkgs, inputs, system, email, fullName, username, profile, ... }: {
   imports = [
     ./${profile}.nix
     inputs.determinate.darwinModules.default
@@ -74,7 +74,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    extraSpecialArgs = { inherit inputs profile; };
+    extraSpecialArgs = { inherit inputs profile username email fullName; };
     users.${username} = import ../home;
   };
 }
