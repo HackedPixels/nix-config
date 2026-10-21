@@ -15,9 +15,9 @@
 
   outputs = inputs@{ self, home-manager, nix-darwin, nixpkgs, determinate, catppuccin, nixvim, ...}:
   let
-    mkDarwinSystem = { system, username, profile }:
+    mkDarwinSystem = { system, username, fullName, email, profile }:
       nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs system username profile; };
+        specialArgs = { inherit inputs system username fullName email profile; };
         modules = [ ./modules/darwin ];
       };
   in
@@ -26,6 +26,8 @@
       "SDGDEU-YFD7130T" = mkDarwinSystem {
         system = "aarch64-darwin";
         username = "jan";
+	fullName = "Jan Köppen";
+	email = "jan.koeppen1@digits.schwarz";
         profile = "work";
       };
       "Jans-MacBook-Pro" = mkDarwinSystem {
