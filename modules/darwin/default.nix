@@ -11,7 +11,7 @@
   # $ nix-env -qaP | grep wget
   environment.systemPackages = [
     pkgs.vim
-    pkgs.lmstudio
+    #pkgs.lmstudio
     pkgs.git
 
     #pkgs.alcove # dont include since it cant be licensed when installed via nix

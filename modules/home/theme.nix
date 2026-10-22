@@ -6,9 +6,17 @@
   catppuccin = {
     enable = true;
     autoEnable = false;
-    flavor = "mocha";
+    flavor = "latte";
     accent = "peach";
   };
+
+  catppuccin.nvim = {
+    enable = true;
+    settings = {
+      transparent_background = true;
+    };
+  };
+
   catppuccin.wezterm = {
     enable = true;
     apply = true;

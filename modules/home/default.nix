@@ -20,11 +20,11 @@
     unzip
     gcc
     nodejs_22
-    crush
+    #crush
   ];
 
   programs.zed-editor.enable = true;
-  programs.claude-code.enable = true;
+  #programs.claude-code.enable = true;
 
   programs.tmux = {
     enable = true;
